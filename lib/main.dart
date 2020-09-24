@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'dart:io' show Platform;
+
 void main() {
   runApp(MyApp());
 }
@@ -43,7 +45,7 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: UiKitView(viewType: "SceneView"),
+      body: getPlatformTextView(),
       floatingActionButton: FloatingActionButton(
         onPressed: _incrementCounter,
         tooltip: 'Increment',
@@ -51,4 +53,15 @@ class _MyHomePageState extends State<MyHomePage> {
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
+
+  Widget getPlatformTextView() {
+    if (Platform.isAndroid) {
+      return AndroidView(viewType: "SceneView");
+    } else if (Platform.isIOS) {
+      return UiKitView(viewType: "SceneView");
+    } else {
+      return Text("Not supported");
+    }
+  }
+
 }

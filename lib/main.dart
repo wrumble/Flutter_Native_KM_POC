@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'dart:io' show Platform;
 
@@ -31,13 +32,9 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
+  static const platform = const MethodChannel('bimmultiplatform/colors');
+  Color currentSelectionColor = Color(0xFFFFFF);
+  List<String> colorList = ["Red", "Green", "Blue"];
 
   @override
   Widget build(BuildContext context) {
@@ -46,11 +43,21 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
       ),
       body: getPlatformSceneView(),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+      bottomNavigationBar: Row(children: <Widget>[
+        colorButton(colorList[0]),
+        colorButton(colorList[1]),
+        colorButton(colorList[2])
+      ]),
+      // This trailing comma makes auto-formatting nicer for build methods.
+    );
+  }
+
+  Widget colorButton(String color) {
+    return Expanded(
+        child: RaisedButton(
+        child: Text(color),
+        onPressed: () => setSelectionColor(color),
+        )
     );
   }
 
@@ -61,8 +68,23 @@ class _MyHomePageState extends State<MyHomePage> {
     } else if (Platform.isIOS) {
       return UiKitView(viewType: viewType);
     } else {
-      return Text("Not supported");
+      return Text("Platform not supported");
     }
   }
 
+  Future<void> setSelectionColor(String color) async {
+    Color selectionColor;
+    String methodName = "setSelectionColor";
+    try {
+      final String result = await platform.invokeMethod(methodName, {"color": color});
+      print("Color set to $result");
+    } on PlatformException catch (error) {
+      print("Error setting color through $methodName MethodChannel: $error ");
+      selectionColor = currentSelectionColor;
+    }
+
+    setState(() {
+      currentSelectionColor = selectionColor;
+    });
+  }
 }

@@ -1,34 +1,54 @@
 package com.example.BIMMultiPlatform
 
-import io.flutter.embedding.engine.FlutterEngine
-
-import android.view.View
-import androidx.annotation.NonNull
-import io.flutter.embedding.android.FlutterActivity
-import io.flutter.plugins.GeneratedPluginRegistrant
-
 import android.content.Context
+import android.util.Log
 import android.view.Gravity
 import android.view.MotionEvent
-import android.widget.TextView
+import android.view.View
 import android.widget.Toast
+import androidx.annotation.NonNull
 import com.example.bimtestandroid.DragTransformableNode
 import com.google.ar.sceneform.HitTestResult
-import com.google.ar.sceneform.Scene
-import io.flutter.plugin.common.BinaryMessenger
-import io.flutter.plugin.common.StandardMessageCodec
-import io.flutter.plugin.platform.PlatformView
-import io.flutter.plugin.platform.PlatformViewFactory
 import com.google.ar.sceneform.SceneView
 import com.google.ar.sceneform.rendering.ModelRenderable
 import com.google.ar.sceneform.ux.FootprintSelectionVisualizer
 import com.google.ar.sceneform.ux.TransformationSystem
-import io.flutter.Log
+import io.flutter.embedding.android.FlutterActivity
+import io.flutter.embedding.engine.FlutterEngine
+import io.flutter.plugin.common.BinaryMessenger
+import io.flutter.plugin.common.MethodChannel
+import io.flutter.plugin.common.StandardMessageCodec
+import io.flutter.plugin.platform.PlatformView
+import io.flutter.plugin.platform.PlatformViewFactory
+import io.flutter.plugins.GeneratedPluginRegistrant
 
 class MainActivity: FlutterActivity() {
+
     override fun configureFlutterEngine(@NonNull flutterEngine: FlutterEngine) {
+        super.configureFlutterEngine(flutterEngine)
+
+        registerSceneView(flutterEngine)
+        registerSetColorChannel(flutterEngine)
+    }
+
+    private fun registerSceneView(flutterEngine: FlutterEngine) {
         GeneratedPluginRegistrant.registerWith(flutterEngine)
         SceneViewPlugin.registerWith(flutterEngine)
+    }
+
+    private fun registerSetColorChannel(flutterEngine: FlutterEngine) {
+        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, "bimmultiplatform/colors").setMethodCallHandler { call, _ ->
+            if (call.method == "setSelectionColor") {
+                setColor(call.arguments)
+            }
+        }
+    }
+
+    private fun setColor(arguments: Any?) {
+        if (arguments is Map<*, *>) {
+            val color = arguments["color"]
+            Log.d("BIMMultiPlatform Android", "It mother fucking works we got the color: $color")
+        }
     }
 }
 
@@ -52,7 +72,6 @@ class FlutterSceneView(context: Context): PlatformView {
     private val sceneView = SceneView(context)
 
     init {
-        Log.d("FlutterSceneView", "WTF IN innit")
         setBIMScene()
     }
 

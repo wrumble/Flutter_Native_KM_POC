@@ -45,7 +45,7 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: getPlatformTextView(),
+      body: getPlatformSceneView(),
       floatingActionButton: FloatingActionButton(
         onPressed: _incrementCounter,
         tooltip: 'Increment',
@@ -54,11 +54,12 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  Widget getPlatformTextView() {
+  Widget getPlatformSceneView() {
+    final String viewType = "SceneView";
     if (Platform.isAndroid) {
-      return AndroidView(viewType: "SceneView");
+      return AndroidView(viewType: viewType);
     } else if (Platform.isIOS) {
-      return UiKitView(viewType: "SceneView");
+      return UiKitView(viewType: viewType);
     } else {
       return Text("Not supported");
     }

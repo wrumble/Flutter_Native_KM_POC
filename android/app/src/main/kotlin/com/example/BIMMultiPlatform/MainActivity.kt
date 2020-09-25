@@ -57,21 +57,14 @@ class FlutterSceneView(context: Context): PlatformView {
     }
 
     private fun setBIMScene() {
-        Log.d("FlutterSceneView", "WTF IN setBIMScene")
-        Log.d("FlutterSceneView context", "$context")
-        val bimtest = R.raw.bimtest
-        Log.d("FlutterSceneView bimtest", "$bimtest")
-
         ModelRenderable.builder()
                 .setSource(context, R.raw.bimtest)
 
                 .build()
                 .thenAccept {
-                    Log.d("FlutterSceneView", "WTF IN thenAccept")
                     addNodeToScene(it)
                 }
                 .exceptionally {
-                    Log.d("FlutterSceneView", "WTF IN exceptionally")
                     val toast = Toast.makeText(context, "Unable to load BIM renderable", Toast.LENGTH_LONG)
                     toast.setGravity(Gravity.CENTER, 0, 0)
                     toast.show()
@@ -80,7 +73,6 @@ class FlutterSceneView(context: Context): PlatformView {
     }
 
     private fun addNodeToScene(model: ModelRenderable) {
-        Log.d("FlutterSceneView", "WTF IN addNodeToScene")
         val transformationSystem = makeTransformationSystem()
         val dragTransformableNode = DragTransformableNode(3f, transformationSystem)
         dragTransformableNode.renderable = model
@@ -97,20 +89,16 @@ class FlutterSceneView(context: Context): PlatformView {
     }
 
     private fun makeTransformationSystem(): TransformationSystem {
-        Log.d("FlutterSceneView", "WTF IN makeTransformationSystem")
         val footprintSelectionVisualizer = FootprintSelectionVisualizer()
         return TransformationSystem(context.resources.displayMetrics, footprintSelectionVisualizer)
     }
 
     override fun getView(): View {
-        print("WTF IN getView")
         sceneView.resume()
         return sceneView
     }
 
     override fun dispose() {
-        print("WTF IN dispose")
-        sceneView.pause()
         sceneView.destroy()
     }
 }

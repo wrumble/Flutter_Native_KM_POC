@@ -7,6 +7,8 @@ import com.google.ar.sceneform.math.Vector3
 import com.google.ar.sceneform.ux.BaseTransformationController
 import com.google.ar.sceneform.ux.DragGesture
 import com.google.ar.sceneform.ux.DragGestureRecognizer
+import kotlin.math.cos
+import kotlin.math.sin
 
 
 class DragRotationController(
@@ -32,15 +34,15 @@ class DragRotationController(
     }
 
     private fun getX(lat: Double, long: Double): Float {
-        return (transformableNode.radius * Math.cos(Math.toRadians(lat)) * Math.sin(Math.toRadians(long))).toFloat()
+        return (transformableNode.radius * cos(Math.toRadians(lat)) * Math.sin(Math.toRadians(long))).toFloat()
     }
 
-    private fun getY(lat: Double, long: Double): Float {
-        return transformableNode.radius * Math.sin(Math.toRadians(lat)).toFloat()
+    private fun getY(lat: Double): Float {
+        return transformableNode.radius * sin(Math.toRadians(lat)).toFloat()
     }
 
     private fun getZ(lat: Double, long: Double): Float {
-        return (transformableNode.radius * Math.cos(Math.toRadians(lat)) * Math.cos(Math.toRadians(long))).toFloat()
+        return (transformableNode.radius * cos(Math.toRadians(lat)) * Math.cos(Math.toRadians(long))).toFloat()
     }
 
     override fun onActivated(node: Node?) {
@@ -60,8 +62,6 @@ class DragRotationController(
         long -= deltaAngleX
         lat += deltaAngleY
 
-        //lat = Math.max(Math.min(lat, 90.0), 0.0)
-
         transformCamera(lat, long)
     }
 
@@ -69,15 +69,11 @@ class DragRotationController(
         val camera = transformableNode.scene?.camera
 
         var rot = Quaternion.eulerAngles(Vector3(0F, 0F, 0F))
-        val pos = Vector3(getX(lat, long), getY(lat, long), getZ(lat, long))
+        val pos = Vector3(getX(lat, long), getY(lat), getZ(lat, long))
         rot = Quaternion.multiply(rot, Quaternion(Vector3.up(), (long).toFloat()))
         rot = Quaternion.multiply(rot, Quaternion(Vector3.right(), (-lat).toFloat()))
         camera?.localRotation = rot
         camera?.localPosition = pos
-    }
-
-    fun resetInitialState() {
-        transformCamera(initialLat, initialLong)
     }
 
     public override fun onEndTransformation(gesture: DragGesture) {}

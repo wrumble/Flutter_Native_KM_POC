@@ -1,6 +1,7 @@
 package com.example.BIMMultiPlatform
 
 import android.content.Context
+import android.graphics.Color
 import android.util.Log
 import android.view.Gravity
 import android.view.MotionEvent
@@ -21,8 +22,11 @@ import io.flutter.plugin.common.StandardMessageCodec
 import io.flutter.plugin.platform.PlatformView
 import io.flutter.plugin.platform.PlatformViewFactory
 import io.flutter.plugins.GeneratedPluginRegistrant
+import java.lang.Long.parseLong
 
 class MainActivity: FlutterActivity() {
+
+    private lateinit var sceneViewFactory: SceneViewFactory
 
     override fun configureFlutterEngine(@NonNull flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
@@ -32,42 +36,47 @@ class MainActivity: FlutterActivity() {
     }
 
     private fun registerSceneView(flutterEngine: FlutterEngine) {
+        sceneViewFactory = SceneViewFactory(flutterEngine.dartExecutor.binaryMessenger)
+
         GeneratedPluginRegistrant.registerWith(flutterEngine)
-        SceneViewPlugin.registerWith(flutterEngine)
+        flutterEngine.platformViewsController.registry.registerViewFactory("SceneView", sceneViewFactory)
     }
 
     private fun registerSetColorChannel(flutterEngine: FlutterEngine) {
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, "bimmultiplatform/colors").setMethodCallHandler { call, _ ->
             if (call.method == "setSelectionColor") {
-                setColor(call.arguments)
+                saveColor(call.arguments)
             }
         }
     }
 
-    private fun setColor(arguments: Any?) {
+    private fun saveColor(arguments: Any?) {
         if (arguments is Map<*, *>) {
             val color = arguments["color"]
             Log.d("BIMMultiPlatform Android", "It mother fucking works we got the color: $color")
         }
     }
-}
 
-object SceneViewPlugin{
-    fun registerWith(engine: FlutterEngine) {
-            engine
-                .platformViewsController.registry
-                .registerViewFactory("SceneView", SceneViewFactory(engine.dartExecutor.binaryMessenger))
+    private fun setBackgroundColor(color: String) {
+        sceneViewFactory.sceneView.backGroundColor = color
     }
 }
 
 class SceneViewFactory(private val messenger: BinaryMessenger) : PlatformViewFactory(StandardMessageCodec.INSTANCE) {
+    public lateinit var sceneView: FlutterSceneView
 
     override fun create(context: Context, id: Int, o: Any?): PlatformView {
-        return FlutterSceneView(context)
+        sceneView = FlutterSceneView(context)
+        return sceneView
     }
 }
 
 class FlutterSceneView(context: Context): PlatformView {
+    public var backGroundColor: String = "FFFFFF"
+        set(value) {
+            val newColor = Color.parseColor(value)
+            sceneView.setBackgroundColor(newColor)
+        }
     private val context = context
     private val sceneView = SceneView(context)
 
@@ -113,6 +122,8 @@ class FlutterSceneView(context: Context): PlatformView {
     }
 
     override fun getView(): View {
+        val color = parseLong(backGroundColor, 16).toInt()
+        sceneView.setBackgroundColor(color)
         sceneView.resume()
         return sceneView
     }

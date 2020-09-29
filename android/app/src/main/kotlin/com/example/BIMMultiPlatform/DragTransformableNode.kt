@@ -1,4 +1,4 @@
-package com.example.bimtestandroid
+package com.rumblewayne.bimtestandroid
 
 import com.google.ar.sceneform.ux.TransformableNode
 import com.google.ar.sceneform.ux.TransformationSystem

@@ -11,12 +11,19 @@ import SceneKit
 import Flutter
 
 class SceneViewFactory: NSObject, FlutterPlatformViewFactory {
+    public var sceneView: SceneView!
     func create(withFrame frame: CGRect, viewIdentifier viewId: Int64, arguments args: Any?) -> FlutterPlatformView {
-        return SceneView(frame, viewId: viewId, args: args)
+        sceneView = SceneView(frame, viewId: viewId, args: args)
+        return sceneView
     }
 }
 
 public class SceneView: NSObject, FlutterPlatformView {
+    public var backgroundColor: String = "000000" {
+        didSet {
+            setBackground(to: backgroundColor)
+        }
+    }
     private var viewId: Int64!
     private var sceneView = SCNView()
 
@@ -34,7 +41,12 @@ public class SceneView: NSObject, FlutterPlatformView {
     }
 
     public func view() -> UIView {
+        setBackground(to: backgroundColor)
         return sceneView
+    }
+
+    private func setBackground(to color: String) {
+        sceneView.backgroundColor = UIColor(hexString: color)
     }
 
     private func setupScene() {
@@ -63,9 +75,11 @@ public class SceneView: NSObject, FlutterPlatformView {
 
         sceneView.allowsCameraControl = true
         sceneView.backgroundColor = .darkGray
+
         if #available(iOS 11.0, *) {
             sceneView.cameraControlConfiguration.allowsTranslation = false
         }
         sceneView.scene = scene
     }
+
 }

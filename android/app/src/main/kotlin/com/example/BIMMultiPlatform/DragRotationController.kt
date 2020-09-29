@@ -1,4 +1,4 @@
-package com.example.bimtestandroid
+package com.rumblewayne.bimtestandroid
 
 import android.os.Handler
 import com.google.ar.sceneform.Node

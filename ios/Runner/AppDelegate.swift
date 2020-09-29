@@ -1,22 +1,25 @@
 import UIKit
 import Flutter
+import KMShared
 
 @UIApplicationMain
 @objc class AppDelegate: FlutterAppDelegate {
-  override func application(
-    _ application: UIApplication,
-    didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
-  ) -> Bool {
+    private var colorFactory = ColorFactory()
+    private var sceneViewFactory = SceneViewFactory()
 
-    registerSceneView()
-    registerSetColorChannel()
+    override func application(
+      _ application: UIApplication,
+      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
 
-    return super.application(application, didFinishLaunchingWithOptions: launchOptions)
-  }
+      setupColorListener()
+      registerSceneView()
+      registerSetColorChannel()
+
+      return super.application(application, didFinishLaunchingWithOptions: launchOptions)
+    }
 
     private func registerSceneView() {
-        let viewFactory = SceneViewFactory()
-        registrar(forPlugin: "BIMMultiPlatform")?.register(viewFactory, withId: "SceneView")
+        registrar(forPlugin: "BIMMultiPlatform")?.register(sceneViewFactory, withId: "SceneView")
         GeneratedPluginRegistrant.register(with: self)
     }
 
@@ -28,18 +31,26 @@ import Flutter
                                                   binaryMessenger: controller.binaryMessenger)
         colorsChannel.setMethodCallHandler {(call: FlutterMethodCall, result: @escaping FlutterResult) -> Void in
             if call.method == "setSelectionColor"{
-                self.setColor(from: call.arguments)
+                self.saveColor(from: call.arguments)
             }
         }
     }
 
-    private func setColor(from arguments: Any?) {
+    private func setupColorListener() {
+        colorFactory.colorListener = setBackgroundColor
+    }
+
+    private func saveColor(from arguments: Any?) {
         guard let arguments = arguments as? [String: Any] else {
             return
         }
         if let color = arguments["color"] as? String {
-            print("It mother fucking works we got the color: \(color)")
+            colorFactory.saveColor(newColor: color)
         }
+    }
+
+    private func setBackgroundColor(color: String) {
+        sceneViewFactory.sceneView.backgroundColor = color
     }
 }
 

@@ -1,5 +1,6 @@
 package com.example.BIMMultiPlatform
 
+import ColorFactory
 import android.content.Context
 import android.graphics.Color
 import android.util.Log
@@ -27,10 +28,12 @@ import java.lang.Long.parseLong
 class MainActivity: FlutterActivity() {
 
     private lateinit var sceneViewFactory: SceneViewFactory
+    private val colorFactory = ColorFactory()
 
     override fun configureFlutterEngine(@NonNull flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
 
+        setupColorListener()
         registerSceneView(flutterEngine)
         registerSetColorChannel(flutterEngine)
     }
@@ -50,10 +53,20 @@ class MainActivity: FlutterActivity() {
         }
     }
 
+    private fun setupColorListener() {
+        colorFactory.colorListener = {
+            setBackgroundColor(it)
+        }
+    }
+
     private fun saveColor(arguments: Any?) {
         if (arguments is Map<*, *>) {
             val color = arguments["color"]
-            Log.d("BIMMultiPlatform Android", "It mother fucking works we got the color: $color")
+            if (color is String) {
+                colorFactory.saveColor(color)
+            } else {
+                Log.d("BIMMultiPlatform Android", "Color passed is not a string: $color")
+            }
         }
     }
 
@@ -63,7 +76,7 @@ class MainActivity: FlutterActivity() {
 }
 
 class SceneViewFactory(private val messenger: BinaryMessenger) : PlatformViewFactory(StandardMessageCodec.INSTANCE) {
-    public lateinit var sceneView: FlutterSceneView
+    lateinit var sceneView: FlutterSceneView
 
     override fun create(context: Context, id: Int, o: Any?): PlatformView {
         sceneView = FlutterSceneView(context)
@@ -72,9 +85,11 @@ class SceneViewFactory(private val messenger: BinaryMessenger) : PlatformViewFac
 }
 
 class FlutterSceneView(context: Context): PlatformView {
-    public var backGroundColor: String = "FFFFFF"
+    var backGroundColor: String = "FFFFFF"
         set(value) {
+            Log.d("BIMMultiPlatform Android", "Setting backGroundColor: $value")
             val newColor = Color.parseColor(value)
+            Log.d("BIMMultiPlatform Android", "Setting parsedColor: $newColor")
             sceneView.setBackgroundColor(newColor)
         }
     private val context = context

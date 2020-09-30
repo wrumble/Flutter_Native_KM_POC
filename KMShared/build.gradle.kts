@@ -6,6 +6,7 @@ val kotlin_version: String by extra
 plugins {
     kotlin("multiplatform")
     id("com.android.library")
+    id("com.squareup.sqldelight")
 }
 
 tasks.withType<KotlinCompile> {
@@ -30,10 +31,13 @@ kotlin {
         }
     }
 
-    sourceSets["commonMain"].dependencies {
-        implementation("org.jetbrains.kotlin:kotlin-stdlib-common")
+    sourceSets["androidMain"].dependencies {
+        implementation("com.squareup.sqldelight:android-driver:1.4.3")
     }
 
+    sourceSets["iosMain"].dependencies {
+        implementation("com.squareup.sqldelight:native-driver:1.4.3")
+    }
 }
 
 android {
@@ -58,6 +62,12 @@ dependencies {
     implementation("androidx.core:core-ktx:+")
 }
 
+sqldelight {
+    database("KMSharedDatabase") {
+        packageName = "com.rumblewayne.bimmultiplatorm"
+        sourceFolders = listOf("sqlDelight")
+    }
+}
 
 val packForXcode by tasks.creating(Sync::class) {
     val targetDir = File(buildDir, "xcode-frameworks")

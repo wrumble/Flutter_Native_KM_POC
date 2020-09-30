@@ -1,0 +1,14 @@
+CREATE TABLE color (
+  key INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+  name TEXT NOT NULL,
+  hex TEXT NOT NULL
+);
+
+insertItem:
+INSERT OR REPLACE INTO color (name, hex) VALUES (?, ?);
+
+selectAll:
+SELECT * FROM color ORDER BY key;
+
+deleteAll:
+DELETE FROM color;

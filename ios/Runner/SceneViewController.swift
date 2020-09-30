@@ -19,7 +19,7 @@ class SceneViewFactory: NSObject, FlutterPlatformViewFactory {
 }
 
 public class SceneView: NSObject, FlutterPlatformView {
-    public var backgroundColor: String = "000000" {
+    public var backgroundColor: String = "FFFFFF" {
         didSet {
             setBackground(to: backgroundColor)
         }

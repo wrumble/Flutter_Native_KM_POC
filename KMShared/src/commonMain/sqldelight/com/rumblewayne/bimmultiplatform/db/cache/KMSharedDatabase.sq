@@ -1,0 +1,14 @@
+CREATE TABLE Color (
+  name TEXT NOT NULL,
+  hex TEXT NOT NULL
+);
+
+saveColor:
+INSERT OR REPLACE INTO Color (name, hex)
+VALUES (?, ?);
+
+getColors:
+SELECT * FROM Color;
+
+deleteColors:
+DELETE FROM Color;

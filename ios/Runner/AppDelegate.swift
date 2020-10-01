@@ -4,21 +4,25 @@ import KMShared
 
 @UIApplicationMain
 @objc class AppDelegate: FlutterAppDelegate {
-    private var colorFactory = ColorFactory()
-    private var sceneViewFactory = SceneViewFactory()
+    private let database = Database(databaseDriverFactory: DatabaseDriverFactory())
 
-    override func application(
-      _ application: UIApplication,
-      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+    private var sceneViewFactory: SceneViewFactory?
 
-      setupColorListener()
-      registerSceneView()
-      registerSetColorChannel()
+    override func application(_ application: UIApplication,
+                              didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
 
-      return super.application(application, didFinishLaunchingWithOptions: launchOptions)
+        sceneViewFactory = SceneViewFactory(fetchBackgroundColor: fetchBackgroundColor)
+        setupColorListener()
+        registerSceneView()
+        registerSetColorChannel()
+
+        return super.application(application, didFinishLaunchingWithOptions: launchOptions)
     }
 
     private func registerSceneView() {
+        guard let sceneViewFactory = sceneViewFactory else {
+            return
+        }
         registrar(forPlugin: "BIMMultiPlatform")?.register(sceneViewFactory, withId: "SceneView")
         GeneratedPluginRegistrant.register(with: self)
     }
@@ -37,7 +41,7 @@ import KMShared
     }
 
     private func setupColorListener() {
-        colorFactory.colorListener = setBackgroundColor
+        database.colorListener = setBackgroundColor
     }
 
     private func saveColor(from arguments: Any?) {
@@ -45,12 +49,23 @@ import KMShared
             return
         }
         if let color = arguments["color"] as? String {
-            colorFactory.saveColor(newColor: color)
+            database.cacheBackgroundColor(color: color)
         }
     }
 
     private func setBackgroundColor(color: String) {
+        guard let sceneViewFactory = sceneViewFactory else {
+            return
+        }
         sceneViewFactory.sceneView.backgroundColor = color
+    }
+
+    private func fetchBackgroundColor() -> String? {
+        if let savedColor = database.fetchColor() {
+            return savedColor.hex
+        } else {
+            return nil
+        }
     }
 }
 

@@ -12,8 +12,14 @@ import Flutter
 
 class SceneViewFactory: NSObject, FlutterPlatformViewFactory {
     public var sceneView: SceneView!
+    private let fetchBackgroundColor: () -> String?
+
+    required init(fetchBackgroundColor: @escaping () -> String?) {
+        self.fetchBackgroundColor = fetchBackgroundColor
+    }
+
     func create(withFrame frame: CGRect, viewIdentifier viewId: Int64, arguments args: Any?) -> FlutterPlatformView {
-        sceneView = SceneView(frame, viewId: viewId, args: args)
+        sceneView = SceneView(frame, viewId: viewId, args: args, fetchBackgroundColor: fetchBackgroundColor)
         return sceneView
     }
 }
@@ -27,13 +33,14 @@ public class SceneView: NSObject, FlutterPlatformView {
     private var viewId: Int64!
     private var sceneView = SCNView()
 
-    init(_ frame: CGRect, viewId: Int64, args: Any?) {
+    init(_ frame: CGRect, viewId: Int64, args: Any?, fetchBackgroundColor: @escaping () -> String?) {
         super.init()
 
         self.viewId = viewId
         self.sceneView.frame = frame
 
         setupScene()
+        backgroundColor = fetchBackgroundColor() ?? "FFFFFF"
     }
 
     required init?(coder: NSCoder) {

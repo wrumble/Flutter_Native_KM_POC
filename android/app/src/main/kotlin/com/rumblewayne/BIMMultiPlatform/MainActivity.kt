@@ -1,9 +1,10 @@
 package com.rumblewayne.BIMMultiPlatform
 
-import ColorFactory
 import SceneViewFactory
 import android.util.Log
 import androidx.annotation.NonNull
+import com.rumblewayne.bimmultiplatform.db.cache.Database
+import com.rumblewayne.bimmultiplatform.db.cache.DatabaseDriverFactory
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
@@ -12,14 +13,25 @@ import io.flutter.plugins.GeneratedPluginRegistrant
 class MainActivity: FlutterActivity() {
 
     private lateinit var sceneViewFactory: SceneViewFactory
-    private val colorFactory = ColorFactory()
+    private val databaseDriverFactory = DatabaseDriverFactory(context)
+    private val database = Database(databaseDriverFactory)
 
     override fun configureFlutterEngine(@NonNull flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
 
-        setupColorListener()
         registerSceneView(flutterEngine)
         registerSetColorChannel(flutterEngine)
+    }
+
+    override fun onFlutterUiDisplayed() {
+        super.onFlutterUiDisplayed()
+
+        setupColorListener()
+
+        val savedColor = database.fetchColor()
+        if (savedColor != null) {
+            setBackgroundColor(savedColor.hex)
+        }
     }
 
     private fun registerSceneView(flutterEngine: FlutterEngine) {
@@ -38,7 +50,7 @@ class MainActivity: FlutterActivity() {
     }
 
     private fun setupColorListener() {
-        colorFactory.colorListener = {
+        database.colorListener = {
             setBackgroundColor(it)
         }
     }
@@ -47,7 +59,7 @@ class MainActivity: FlutterActivity() {
         if (arguments is Map<*, *>) {
             val color = arguments["color"]
             if (color is String) {
-                colorFactory.saveColor(color)
+                database.cacheBackgroundColor(color)
             } else {
                 Log.d("BIMMultiPlatform Android", "Color passed is not a string: $color")
             }

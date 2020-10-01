@@ -31,6 +31,10 @@ kotlin {
         }
     }
 
+    sourceSets["commonMain"].dependencies {
+        implementation("com.squareup.sqldelight:runtime:1.4.3")
+    }
+
     sourceSets["androidMain"].dependencies {
         implementation("com.squareup.sqldelight:android-driver:1.4.3")
     }
@@ -64,7 +68,7 @@ dependencies {
 
 sqldelight {
     database("KMSharedDatabase") {
-        packageName = "com.rumblewayne.bimmultiplatorm"
+        packageName = "com.rumblewayne.bimmultiplatform.db.cache"
         sourceFolders = listOf("sqlDelight")
     }
 }
@@ -82,7 +86,6 @@ val packForXcode by tasks.creating(Sync::class) {
     from({ framework.outputDirectory })
     into(targetDir)
 
-    /// generate a helpful ./gradlew wrapper with embedded Java path
     doLast {
         val gradlew = File(targetDir, "gradlew")
         gradlew.writeText(

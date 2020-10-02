@@ -19,9 +19,6 @@ class Database(databaseDriverFactory: DatabaseDriverFactory) {
 
     fun cacheBackgroundColor(color: String) {
         val bgColor = BGColor(color)
-        dbQuery.transaction {
-            dbQuery.deleteColorWithId(BGColor.id) //Make these update instead of delete
-            dbQuery.saveColor(BGColor.id, bgColor.name, bgColor.hex)
-        }
+        dbQuery.saveOrUpdateColor(BGColor.id, bgColor.name, bgColor.hex)
     }
 }

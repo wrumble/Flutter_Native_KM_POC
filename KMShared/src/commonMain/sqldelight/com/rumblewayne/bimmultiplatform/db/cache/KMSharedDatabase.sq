@@ -1,15 +1,13 @@
 CREATE TABLE Color (
-  id TEXT NOT NULL,
+  id TEXT NOT NULL PRIMARY KEY,
   name TEXT NOT NULL,
   hex TEXT NOT NULL
 );
 
-saveColor:
+getColorWithId:
+SELECT * FROM Color
+WHERE id = ?;
+
+saveOrUpdateColor:
 INSERT OR REPLACE INTO Color (id, name, hex)
 VALUES (?, ?, ?);
-
-getColorWithId:
-SELECT * FROM Color WHERE id = ?;
-
-deleteColorWithId:
-DELETE FROM Color WHERE id = ?;

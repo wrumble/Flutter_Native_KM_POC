@@ -11,30 +11,15 @@ import SceneKit
 import Flutter
 import KMShared
 
-class SceneViewFactory: NSObject, FlutterPlatformViewFactory {
-    public var sceneView: SceneView?
-    private let database: Database
-
-    init(database: Database) {
-        self.database = database
-    }
-
-    func create(withFrame frame: CGRect, viewIdentifier viewId: Int64, arguments args: Any?) -> FlutterPlatformView {
-        sceneView = SceneView(frame, viewId: viewId, args: args, database: database)
-        return sceneView!
-    }
-}
-
-public class SceneView: NSObject, FlutterPlatformView {
-    private var viewId: Int64!
-    private var database: Database!
+public class FlutterSceneView: NSObject, FlutterPlatformView {
+    private var database: Database
     private var sceneView = SCNView()
 
     init(_ frame: CGRect, viewId: Int64, args: Any?, database: Database) {
+        self.database = database
+
         super.init()
 
-        self.viewId = viewId
-        self.database = database
         self.sceneView.frame = frame
 
         setupScene()
@@ -43,17 +28,6 @@ public class SceneView: NSObject, FlutterPlatformView {
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }
-
-    public func view() -> UIView {
-        return sceneView
-    }
-
-    private func setBackground(to color: BGColor?) {
-        guard let color = color else {
-            return
-        }
-        sceneView.backgroundColor = UIColor(hexString: color.hex)
     }
 
     private func setupScene() {
@@ -88,7 +62,18 @@ public class SceneView: NSObject, FlutterPlatformView {
         sceneView.scene = scene
     }
 
+    public func view() -> UIView {
+        return sceneView
+    }
+
     private func listenToBackgroundColorFlow() {
         database.backgroundColorFlow.watch(block: setBackground)
+    }
+
+    private func setBackground(to color: BGColor?) {
+        guard let color = color else {
+            return
+        }
+        sceneView.backgroundColor = UIColor(hexString: color.hex)
     }
 }

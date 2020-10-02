@@ -11,10 +11,9 @@ import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugins.GeneratedPluginRegistrant
 
 class MainActivity: FlutterActivity() {
-
-    private lateinit var sceneViewFactory: SceneViewFactory
     private val databaseDriverFactory = DatabaseDriverFactory(context)
     private val database = Database(databaseDriverFactory)
+    private lateinit var sceneViewFactory: SceneViewFactory
 
     override fun configureFlutterEngine(@NonNull flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
@@ -23,13 +22,8 @@ class MainActivity: FlutterActivity() {
         registerSetColorChannel(flutterEngine)
     }
 
-    override fun onFlutterUiDisplayed() {
-        super.onFlutterUiDisplayed()
-        listenToBackgroundColorFlow()
-    }
-
     private fun registerSceneView(flutterEngine: FlutterEngine) {
-        sceneViewFactory = SceneViewFactory(flutterEngine.dartExecutor.binaryMessenger)
+        sceneViewFactory = SceneViewFactory(flutterEngine.dartExecutor.binaryMessenger, database)
 
         GeneratedPluginRegistrant.registerWith(flutterEngine)
         flutterEngine.platformViewsController.registry.registerViewFactory("SceneView", sceneViewFactory)
@@ -43,10 +37,6 @@ class MainActivity: FlutterActivity() {
         }
     }
 
-    private fun listenToBackgroundColorFlow() {
-        database.backgroundColorFlow.watch { setBackgroundColor(it.hex) }
-    }
-
     private fun saveColor(arguments: Any?) {
         if (arguments is Map<*, *>) {
             val color = arguments["color"]
@@ -56,9 +46,5 @@ class MainActivity: FlutterActivity() {
                 Log.d("BIMMultiPlatform Android", "Color passed is not a string: $color")
             }
         }
-    }
-
-    private fun setBackgroundColor(color: String) {
-        sceneViewFactory.sceneView.backGroundColor = color
     }
 }

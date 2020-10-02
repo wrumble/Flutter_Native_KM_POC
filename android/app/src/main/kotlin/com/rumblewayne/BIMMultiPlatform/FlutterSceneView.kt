@@ -4,38 +4,23 @@ import android.view.Gravity
 import android.view.MotionEvent
 import android.view.View
 import android.widget.Toast
-import java.lang.Long.parseLong
 import com.google.ar.sceneform.HitTestResult
 import com.google.ar.sceneform.SceneView
 import com.google.ar.sceneform.rendering.ModelRenderable
 import com.google.ar.sceneform.ux.FootprintSelectionVisualizer
 import com.google.ar.sceneform.ux.TransformationSystem
 import com.rumblewayne.BIMMultiPlatform.R
+import com.rumblewayne.bimmultiplatform.db.cache.Database
 import com.rumblewayne.bimtestandroid.DragTransformableNode
-import io.flutter.plugin.common.BinaryMessenger
-import io.flutter.plugin.common.StandardMessageCodec
 import io.flutter.plugin.platform.PlatformView
-import io.flutter.plugin.platform.PlatformViewFactory
 
-class SceneViewFactory(private val messenger: BinaryMessenger): PlatformViewFactory(StandardMessageCodec.INSTANCE) {
-    lateinit var sceneView: FlutterSceneView
-
-    override fun create(context: Context, id: Int, o: Any?): PlatformView {
-        sceneView = FlutterSceneView(context)
-        return sceneView
-    }
-}
-
-class FlutterSceneView(context: Context): PlatformView {
-    var backGroundColor: String = "000000"
-        set(value) {
-            setBackgroundColor(value)
-        }
+class FlutterSceneView(context: Context, private val database: Database): PlatformView {
     private val context = context
     private val sceneView = SceneView(context)
 
     init {
         setBIMScene()
+        listenToBackgroundColorFlow()
     }
 
     private fun setBIMScene() {
@@ -72,6 +57,10 @@ class FlutterSceneView(context: Context): PlatformView {
     private fun makeTransformationSystem(): TransformationSystem {
         val footprintSelectionVisualizer = FootprintSelectionVisualizer()
         return TransformationSystem(context.resources.displayMetrics, footprintSelectionVisualizer)
+    }
+
+    private fun listenToBackgroundColorFlow() {
+        database.backgroundColorFlow.watch { setBackgroundColor(it.hex) }
     }
 
     override fun getView(): View {

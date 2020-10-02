@@ -1,4 +1,7 @@
 data class BGColor(val name: String) {
+    companion object {
+        val id = "Background"
+    }
     lateinit var hex: String
     init {
         colorToHex()

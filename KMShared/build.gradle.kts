@@ -33,6 +33,15 @@ kotlin {
 
     sourceSets["commonMain"].dependencies {
         implementation("com.squareup.sqldelight:runtime:1.4.3")
+        implementation("com.squareup.sqldelight:coroutines-extensions:1.4.3")
+        implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.9-native-mt") {
+            version {
+                strictly("1.3.9-native-mt")
+            }
+        }
+        implementation("io.ktor:ktor-client-core:1.4.1") {
+
+        }
     }
 
     sourceSets["androidMain"].dependencies {

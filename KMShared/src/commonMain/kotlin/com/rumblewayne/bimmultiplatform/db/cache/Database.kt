@@ -1,32 +1,27 @@
 package com.rumblewayne.bimmultiplatform.db.cache
 
 import BGColor
+import com.squareup.sqldelight.runtime.coroutines.asFlow
+import com.squareup.sqldelight.runtime.coroutines.mapToOneNotNull
+import kotlinx.coroutines.flow.map
 
 class Database(databaseDriverFactory: DatabaseDriverFactory) {
-    var colorListener: ((String) -> Unit)? = null
     private val database = KMSharedDatabase(databaseDriverFactory.createDriver())
     private val dbQuery = database.kMSharedDatabaseQueries
 
-    fun fetchColor(): BGColor? {
-        println("WTF fetchColor")
-        return dbQuery
-                .getColors()
-                .executeAsList()
-                .map { BGColor(name = it.name) }
-                .firstOrNull()
-    }
+    val backgroundColorFlow: CFlow<BGColor> =
+            dbQuery.getColorWithId(BGColor.id)
+                    .asFlow()
+                    .mapToOneNotNull()
+                    .map { BGColor(it.name) }
+                    .asCommonFlow()
+
 
     fun cacheBackgroundColor(color: String) {
-        println("WTF cacheBackgroundColor: $color")
-        val bgColor = BGColor(name = color)
-        clearDatabase()
-        dbQuery.saveColor(bgColor.name, bgColor.hex)
-        colorListener?.invoke(bgColor.hex)
-    }
-
-    private fun clearDatabase() {
+        val bgColor = BGColor(color)
         dbQuery.transaction {
-            dbQuery.getColors()
+            dbQuery.deleteColorWithId(BGColor.id)
+            dbQuery.saveColor(BGColor.id, bgColor.name, bgColor.hex)
         }
     }
 }

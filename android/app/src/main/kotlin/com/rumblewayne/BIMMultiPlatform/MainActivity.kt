@@ -25,13 +25,7 @@ class MainActivity: FlutterActivity() {
 
     override fun onFlutterUiDisplayed() {
         super.onFlutterUiDisplayed()
-
-        setupColorListener()
-
-        val savedColor = database.fetchColor()
-        if (savedColor != null) {
-            setBackgroundColor(savedColor.hex)
-        }
+        listenToBackgroundColorFlow()
     }
 
     private fun registerSceneView(flutterEngine: FlutterEngine) {
@@ -49,10 +43,8 @@ class MainActivity: FlutterActivity() {
         }
     }
 
-    private fun setupColorListener() {
-        database.colorListener = {
-            setBackgroundColor(it)
-        }
+    private fun listenToBackgroundColorFlow() {
+        database.backgroundColorFlow.watch { setBackgroundColor(it.hex) }
     }
 
     private fun saveColor(arguments: Any?) {

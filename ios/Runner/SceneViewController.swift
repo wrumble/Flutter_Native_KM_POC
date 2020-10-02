@@ -9,38 +9,36 @@ import Foundation
 import UIKit
 import SceneKit
 import Flutter
+import KMShared
 
 class SceneViewFactory: NSObject, FlutterPlatformViewFactory {
-    public var sceneView: SceneView!
-    private let fetchBackgroundColor: () -> String?
+    public var sceneView: SceneView?
+    private let database: Database
 
-    required init(fetchBackgroundColor: @escaping () -> String?) {
-        self.fetchBackgroundColor = fetchBackgroundColor
+    init(database: Database) {
+        self.database = database
     }
 
     func create(withFrame frame: CGRect, viewIdentifier viewId: Int64, arguments args: Any?) -> FlutterPlatformView {
-        sceneView = SceneView(frame, viewId: viewId, args: args, fetchBackgroundColor: fetchBackgroundColor)
-        return sceneView
+        sceneView = SceneView(frame, viewId: viewId, args: args, database: database)
+        return sceneView!
     }
 }
 
 public class SceneView: NSObject, FlutterPlatformView {
-    public var backgroundColor: String = "FFFFFF" {
-        didSet {
-            setBackground(to: backgroundColor)
-        }
-    }
     private var viewId: Int64!
+    private var database: Database!
     private var sceneView = SCNView()
 
-    init(_ frame: CGRect, viewId: Int64, args: Any?, fetchBackgroundColor: @escaping () -> String?) {
+    init(_ frame: CGRect, viewId: Int64, args: Any?, database: Database) {
         super.init()
 
         self.viewId = viewId
+        self.database = database
         self.sceneView.frame = frame
 
         setupScene()
-        backgroundColor = fetchBackgroundColor() ?? "FFFFFF"
+        listenToBackgroundColorFlow()
     }
 
     required init?(coder: NSCoder) {
@@ -48,16 +46,17 @@ public class SceneView: NSObject, FlutterPlatformView {
     }
 
     public func view() -> UIView {
-        setBackground(to: backgroundColor)
         return sceneView
     }
 
-    private func setBackground(to color: String) {
-        sceneView.backgroundColor = UIColor(hexString: color)
+    private func setBackground(to color: BGColor?) {
+        guard let color = color else {
+            return
+        }
+        sceneView.backgroundColor = UIColor(hexString: color.hex)
     }
 
     private func setupScene() {
-        //From .dae or .obj just change extension
         guard let scene = SCNScene(named: "BIMAssets.scnassets/BIMTest.dae") else {
             return
         }
@@ -89,4 +88,7 @@ public class SceneView: NSObject, FlutterPlatformView {
         sceneView.scene = scene
     }
 
+    private func listenToBackgroundColorFlow() {
+        database.backgroundColorFlow.watch(block: setBackground)
+    }
 }

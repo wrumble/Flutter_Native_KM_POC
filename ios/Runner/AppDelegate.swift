@@ -6,12 +6,10 @@ import KMShared
 @objc class AppDelegate: FlutterAppDelegate {
     private let database = Database(databaseDriverFactory: DatabaseDriverFactory())
 
-    private var sceneViewFactory: SceneViewFactory!
+    private var sceneViewFactory: FlutterSceneViewFactory!
 
     override func application(_ application: UIApplication,
                               didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-
-        sceneViewFactory = SceneViewFactory(database: database)
 
         registerSceneView()
         registerSetColorChannel()
@@ -20,6 +18,8 @@ import KMShared
     }
 
     private func registerSceneView() {
+        sceneViewFactory = FlutterSceneViewFactory(database: database)
+
         registrar(forPlugin: "BIMMultiPlatform")?.register(sceneViewFactory, withId: "SceneView")
         GeneratedPluginRegistrant.register(with: self)
     }

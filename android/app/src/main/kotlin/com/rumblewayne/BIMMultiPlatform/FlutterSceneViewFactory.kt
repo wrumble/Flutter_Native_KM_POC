@@ -8,7 +8,7 @@ import io.flutter.plugin.common.StandardMessageCodec
 import io.flutter.plugin.platform.PlatformView
 import io.flutter.plugin.platform.PlatformViewFactory
 
-class SceneViewFactory(private val messenger: BinaryMessenger, private val database: Database): PlatformViewFactory(StandardMessageCodec.INSTANCE) {
+class FlutterSceneViewFactory(private val messenger: BinaryMessenger, private val database: Database): PlatformViewFactory(StandardMessageCodec.INSTANCE) {
     override fun create(context: Context, id: Int, o: Any?): PlatformView {
         return FlutterSceneView(context, database)
     }

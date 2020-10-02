@@ -19,8 +19,8 @@ class DragRotationController(
 
     companion object {
 
-        private const val initialLat = 26.15444376319647
-        private const val initialLong = 18.995950736105442
+        private const val initialLat = -90.0
+        private const val initialLong = 0.0
 
         var lat: Double = initialLat
         var long: Double = initialLong

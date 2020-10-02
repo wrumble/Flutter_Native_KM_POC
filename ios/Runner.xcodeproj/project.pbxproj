@@ -13,7 +13,7 @@
 		8743B2842523B59C0077A5AA /* KMShared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8743B2822523B3B20077A5AA /* KMShared.framework */; };
 		8743B2852523B59C0077A5AA /* KMShared.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 8743B2822523B3B20077A5AA /* KMShared.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		8743B2892523BA1A0077A5AA /* UIColor+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8743B2882523BA1A0077A5AA /* UIColor+Extension.swift */; };
-		8770A6262527C40100FFFF7D /* SceneViewFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8770A6252527C40100FFFF7D /* SceneViewFactory.swift */; };
+		8770A6262527C40100FFFF7D /* FlutterSceneViewFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8770A6252527C40100FFFF7D /* FlutterSceneViewFactory.swift */; };
 		87933E92251B8F68000CEA31 /* FlutterSceneView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87933E91251B8F68000CEA31 /* FlutterSceneView.swift */; };
 		87933E94251B9E36000CEA31 /* BIMAssets.scnassets in Resources */ = {isa = PBXBuildFile; fileRef = 87933E93251B9E36000CEA31 /* BIMAssets.scnassets */; };
 		97C146FC1CF9000F007C117D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FA1CF9000F007C117D /* Main.storyboard */; };
@@ -44,7 +44,7 @@
 		7AFA3C8E1D35360C0083082E /* Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = Release.xcconfig; path = Flutter/Release.xcconfig; sourceTree = "<group>"; };
 		8743B2822523B3B20077A5AA /* KMShared.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = KMShared.framework; path = "../../build/KMShared/xcode-frameworks/KMShared.framework"; sourceTree = "<group>"; };
 		8743B2882523BA1A0077A5AA /* UIColor+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Extension.swift"; sourceTree = "<group>"; };
-		8770A6252527C40100FFFF7D /* SceneViewFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneViewFactory.swift; sourceTree = "<group>"; };
+		8770A6252527C40100FFFF7D /* FlutterSceneViewFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlutterSceneViewFactory.swift; sourceTree = "<group>"; };
 		87933E91251B8F68000CEA31 /* FlutterSceneView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlutterSceneView.swift; sourceTree = "<group>"; };
 		87933E93251B9E36000CEA31 /* BIMAssets.scnassets */ = {isa = PBXFileReference; lastKnownFileType = wrapper.scnassets; path = BIMAssets.scnassets; sourceTree = "<group>"; };
 		9740EEB21CF90195004384FC /* Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = Debug.xcconfig; path = Flutter/Debug.xcconfig; sourceTree = "<group>"; };
@@ -119,7 +119,7 @@
 				87933E91251B8F68000CEA31 /* FlutterSceneView.swift */,
 				87933E93251B9E36000CEA31 /* BIMAssets.scnassets */,
 				8743B2882523BA1A0077A5AA /* UIColor+Extension.swift */,
-				8770A6252527C40100FFFF7D /* SceneViewFactory.swift */,
+				8770A6252527C40100FFFF7D /* FlutterSceneViewFactory.swift */,
 			);
 			path = Runner;
 			sourceTree = "<group>";
@@ -251,7 +251,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				87933E92251B8F68000CEA31 /* FlutterSceneView.swift in Sources */,
-				8770A6262527C40100FFFF7D /* SceneViewFactory.swift in Sources */,
+				8770A6262527C40100FFFF7D /* FlutterSceneViewFactory.swift in Sources */,
 				74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */,
 				1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */,
 				8743B2892523BA1A0077A5AA /* UIColor+Extension.swift in Sources */,

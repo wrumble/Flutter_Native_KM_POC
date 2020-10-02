@@ -9,7 +9,7 @@ import Foundation
 import Flutter
 import KMShared
 
-class SceneViewFactory: NSObject, FlutterPlatformViewFactory {
+class FlutterSceneViewFactory: NSObject, FlutterPlatformViewFactory {
     private let database: Database
 
     init(database: Database) {

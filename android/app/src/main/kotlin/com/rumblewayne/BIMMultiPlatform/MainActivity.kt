@@ -1,6 +1,5 @@
 package com.rumblewayne.BIMMultiPlatform
 
-import SceneViewFactory
 import android.util.Log
 import androidx.annotation.NonNull
 import com.rumblewayne.bimmultiplatform.db.cache.Database
@@ -13,7 +12,7 @@ import io.flutter.plugins.GeneratedPluginRegistrant
 class MainActivity: FlutterActivity() {
     private val databaseDriverFactory = DatabaseDriverFactory(context)
     private val database = Database(databaseDriverFactory)
-    private lateinit var sceneViewFactory: SceneViewFactory
+    private lateinit var sceneViewFactory: FlutterSceneViewFactory
 
     override fun configureFlutterEngine(@NonNull flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
@@ -23,7 +22,7 @@ class MainActivity: FlutterActivity() {
     }
 
     private fun registerSceneView(flutterEngine: FlutterEngine) {
-        sceneViewFactory = SceneViewFactory(flutterEngine.dartExecutor.binaryMessenger, database)
+        sceneViewFactory = FlutterSceneViewFactory(flutterEngine.dartExecutor.binaryMessenger, database)
 
         GeneratedPluginRegistrant.registerWith(flutterEngine)
         flutterEngine.platformViewsController.registry.registerViewFactory("SceneView", sceneViewFactory)

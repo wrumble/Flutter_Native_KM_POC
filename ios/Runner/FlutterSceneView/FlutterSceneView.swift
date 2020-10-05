@@ -10,20 +10,22 @@ import UIKit
 import SceneKit
 import Flutter
 import KMShared
+import RxSwift
 
 public class FlutterSceneView: NSObject, FlutterPlatformView {
-    private var database: Database
+    private var viewModel: FlutterSceneViewModelType
+    private var disposeBag = DisposeBag()
     private var sceneView = SCNView()
 
-    init(_ frame: CGRect, viewId: Int64, args: Any?, database: Database) {
-        self.database = database
+    init(_ frame: CGRect, viewId: Int64, args: Any?, viewModel: FlutterSceneViewModelType) {
+        self.viewModel = viewModel
 
         super.init()
 
         self.sceneView.frame = frame
 
         setupScene()
-        listenToBackgroundColorFlow()
+        subscribeToBackGroundColor()
     }
 
     required init?(coder: NSCoder) {
@@ -66,14 +68,12 @@ public class FlutterSceneView: NSObject, FlutterPlatformView {
         return sceneView
     }
 
-    private func listenToBackgroundColorFlow() {
-        database.backgroundColorFlow.watch(block: setBackground)
-    }
 
-    private func setBackground(to color: BGColor?) {
-        guard let color = color else {
-            return
-        }
-        sceneView.backgroundColor = UIColor(hexString: color.hex)
+    private func subscribeToBackGroundColor() {
+        viewModel.colorBehaviourSubject
+            .asObservable()
+            .subscribe { colorHex in
+                self.sceneView.backgroundColor = UIColor(hexString: colorHex)
+            }.disposed(by: disposeBag)
     }
 }

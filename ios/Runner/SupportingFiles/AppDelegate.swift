@@ -18,7 +18,8 @@ import KMShared
     }
 
     private func registerSceneView() {
-        sceneViewFactory = FlutterSceneViewFactory(database: database)
+        let viewModel = FlutterSceneViewModel(database: database)
+        sceneViewFactory = FlutterSceneViewFactory(viewModel: viewModel)
 
         registrar(forPlugin: "BIMMultiPlatform")?.register(sceneViewFactory, withId: "SceneView")
         GeneratedPluginRegistrant.register(with: self)

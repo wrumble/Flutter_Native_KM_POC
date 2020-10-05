@@ -10,13 +10,13 @@ import Flutter
 import KMShared
 
 class FlutterSceneViewFactory: NSObject, FlutterPlatformViewFactory {
-    private let database: Database
+    private let viewModel: FlutterSceneViewModelType
 
-    init(database: Database) {
-        self.database = database
+    init(viewModel: FlutterSceneViewModelType) {
+        self.viewModel = viewModel
     }
 
     func create(withFrame frame: CGRect, viewIdentifier viewId: Int64, arguments args: Any?) -> FlutterPlatformView {
-        return FlutterSceneView(frame, viewId: viewId, args: args, database: database)
+        return FlutterSceneView(frame, viewId: viewId, args: args, viewModel: viewModel)
     }
 }

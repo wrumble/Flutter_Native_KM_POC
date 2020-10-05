@@ -1,16 +1,15 @@
 # BIMMultiPlatform
 
-A new Flutter project.
+A POC to see how to connect Flutter to Native Android and iOS though Platform Channels and Platform Views while connecting to Kotlin Multiplatform for business logic and databasing.
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+clone the repo
 
-A few resources to get you started if this is your first Flutter project:
+`cd BIMMultiPlatform/android`
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+`./gradlew build`
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+`./gradlew :KMShared:packForXCode`
+
+Open the BIMMultiPlatform root folder in Android Studio and once gradle has finished syncing, if you do not have it already install the flutter plugin, then select to open an android or iOS simulator and run.

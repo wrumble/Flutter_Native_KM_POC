@@ -48,7 +48,6 @@ class _MyHomePageState extends State<MyHomePage> {
         colorButton(colorList[1]),
         colorButton(colorList[2])
       ]),
-      // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 
@@ -68,7 +67,7 @@ class _MyHomePageState extends State<MyHomePage> {
     } else if (Platform.isIOS) {
       return UiKitView(viewType: viewType);
     } else {
-      return Text("Platform not supported");
+      return Center(child: Text("Platform view not supported"),);
     }
   }
 

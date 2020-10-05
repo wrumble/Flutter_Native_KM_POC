@@ -9,7 +9,7 @@ class Database(databaseDriverFactory: DatabaseDriverFactory) {
     private val database = KMSharedDatabase(databaseDriverFactory.createDriver())
     private val dbQuery = database.kMSharedDatabaseQueries
 
-    val backgroundColorFlow: CFlow<BGColor> =
+    val backgroundColorFlow: CommonFlow<BGColor> =
             dbQuery.getColorWithId(BGColor.id)
                     .asFlow()
                     .mapToOneNotNull()

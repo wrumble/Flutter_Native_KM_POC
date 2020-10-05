@@ -9,11 +9,11 @@ class BIMHomePage extends StatefulWidget {
   final BIMHomePageViewModelType viewModel;
 
   @override
-  BIMHomePageStatePageState createState() => BIMHomePageStatePageState(viewModel: viewModel);
+  BIMHomePageState createState() => BIMHomePageState(viewModel: viewModel);
 }
 
-class BIMHomePageStatePageState extends State<BIMHomePage> {
-  BIMHomePageStatePageState({this.viewModel}) : super();
+class BIMHomePageState extends State<BIMHomePage> {
+  BIMHomePageState({this.viewModel}) : super();
 
   final BIMHomePageViewModelType viewModel;
 

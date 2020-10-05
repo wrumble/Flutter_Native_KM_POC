@@ -4,7 +4,7 @@ A POC to see how to connect Flutter to Native Android and iOS though Platform Ch
 
 ## Getting Started
 
-clone the repo
+Clone the repo
 
 `cd BIMMultiPlatform/android`
 

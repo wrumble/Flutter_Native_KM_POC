@@ -6,26 +6,29 @@ import com.rumblewayne.bimmultiplatform.db.cache.Database
 import com.rumblewayne.bimmultiplatform.db.cache.DatabaseDriverFactory
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
+import io.flutter.embedding.engine.FlutterEngineCache
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugins.GeneratedPluginRegistrant
 
 class MainActivity: FlutterActivity() {
-    private val databaseDriverFactory = DatabaseDriverFactory(context)
-    private val database = Database(databaseDriverFactory)
+    private val database = Database(DatabaseDriverFactory(context))
     private lateinit var sceneViewFactory: FlutterSceneViewFactory
 
     override fun configureFlutterEngine(@NonNull flutterEngine: FlutterEngine) {
-        super.configureFlutterEngine(flutterEngine)
-
         registerSceneView(flutterEngine)
         registerSetColorChannel(flutterEngine)
+
+        super.configureFlutterEngine(flutterEngine)
     }
 
     private fun registerSceneView(flutterEngine: FlutterEngine) {
-        sceneViewFactory = FlutterSceneViewFactory(flutterEngine.dartExecutor.binaryMessenger, database)
+        val viewModel = FlutterSceneViewModel(database)
+        sceneViewFactory = FlutterSceneViewFactory(flutterEngine.dartExecutor.binaryMessenger, viewModel)
 
         GeneratedPluginRegistrant.registerWith(flutterEngine)
         flutterEngine.platformViewsController.registry.registerViewFactory("SceneView", sceneViewFactory)
+
+        FlutterEngineCache.getInstance().put("flutterEngine", flutterEngine)
     }
 
     private fun registerSetColorChannel(flutterEngine: FlutterEngine) {

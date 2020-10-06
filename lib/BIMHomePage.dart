@@ -8,23 +8,6 @@ class BIMHomePage extends StatefulWidget {
 
   final BIMHomePageViewModelType viewModel;
 
-  @override
-  BIMHomePageState createState() => BIMHomePageState(viewModel: viewModel);
-}
-
-class BIMHomePageState extends State<BIMHomePage> {
-  BIMHomePageState({this.viewModel}) : super();
-
-  final BIMHomePageViewModelType viewModel;
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-        body: getPlatformSceneView(),
-        bottomNavigationBar: colorButtonRow()
-    );
-  }
-
   Widget getPlatformSceneView() {
     final String viewType = "SceneView";
     if (Platform.isAndroid) {
@@ -32,8 +15,27 @@ class BIMHomePageState extends State<BIMHomePage> {
     } else if (Platform.isIOS) {
       return UiKitView(viewType: viewType);
     } else {
-      return Center(child: Text("Platform view not supported"),);
+      return Center(child: Text("Platform view not supported"));
     }
+  }
+
+  @override
+  BIMHomePageState createState() => BIMHomePageState(viewModel: viewModel, platformSceneView: getPlatformSceneView());
+}
+
+class BIMHomePageState extends State<BIMHomePage> {
+  BIMHomePageState({this.viewModel, this.platformSceneView}) : super();
+
+  final BIMHomePageViewModelType viewModel;
+
+  final Widget platformSceneView;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        body: platformSceneView,
+        bottomNavigationBar: colorButtonRow()
+    );
   }
 
   Widget colorButtonRow() {

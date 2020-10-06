@@ -25,7 +25,7 @@ public class FlutterSceneView: NSObject, FlutterPlatformView {
         self.sceneView.frame = frame
 
         setupScene()
-        subscribeToBackGroundColor()
+        listenToBackgroundColor()
     }
 
     required init?(coder: NSCoder) {
@@ -69,7 +69,7 @@ public class FlutterSceneView: NSObject, FlutterPlatformView {
     }
 
 
-    private func subscribeToBackGroundColor() {
+    private func listenToBackgroundColor() {
         viewModel.colorBehaviourSubject
             .asObservable()
             .subscribe { colorHex in

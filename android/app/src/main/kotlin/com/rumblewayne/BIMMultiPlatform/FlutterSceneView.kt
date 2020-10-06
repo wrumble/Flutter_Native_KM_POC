@@ -1,26 +1,31 @@
 import android.content.Context
 import android.graphics.Color
+import android.util.Log
 import android.view.Gravity
 import android.view.MotionEvent
 import android.view.View
 import android.widget.Toast
+import androidx.lifecycle.viewModelScope
 import com.google.ar.sceneform.HitTestResult
 import com.google.ar.sceneform.SceneView
 import com.google.ar.sceneform.rendering.ModelRenderable
 import com.google.ar.sceneform.ux.FootprintSelectionVisualizer
 import com.google.ar.sceneform.ux.TransformationSystem
+import com.rumblewayne.BIMMultiPlatform.FlutterSceneViewModel
 import com.rumblewayne.BIMMultiPlatform.R
-import com.rumblewayne.bimmultiplatform.db.cache.Database
 import com.rumblewayne.bimtestandroid.DragTransformableNode
 import io.flutter.plugin.platform.PlatformView
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 
-class FlutterSceneView(context: Context, private val database: Database): PlatformView {
+class FlutterSceneView(context: Context, private val viewModel: FlutterSceneViewModel): PlatformView {
     private val context = context
-    private val sceneView = SceneView(context)
+    private var sceneView = SceneView(context)
 
-    init {
+    override fun onFlutterViewAttached(flutterView: View) {
         setBIMScene()
-        listenToBackgroundColorFlow()
+        sceneView.resume()
+        listenToBackgroundColor()
     }
 
     private fun setBIMScene() {
@@ -42,11 +47,11 @@ class FlutterSceneView(context: Context, private val database: Database): Platfo
         val transformationSystem = makeTransformationSystem()
         val dragTransformableNode = DragTransformableNode(3f, transformationSystem)
         dragTransformableNode.renderable = model
-        sceneView.scene.addChild(dragTransformableNode)
+        sceneView.scene?.addChild(dragTransformableNode)
 
         dragTransformableNode.select()
         sceneView.scene
-                .addOnPeekTouchListener { hitTestResult: HitTestResult?, motionEvent: MotionEvent? ->
+                ?.addOnPeekTouchListener { hitTestResult: HitTestResult?, motionEvent: MotionEvent? ->
                     transformationSystem.onTouch(
                             hitTestResult,
                             motionEvent
@@ -59,18 +64,15 @@ class FlutterSceneView(context: Context, private val database: Database): Platfo
         return TransformationSystem(context.resources.displayMetrics, footprintSelectionVisualizer)
     }
 
-    private fun listenToBackgroundColorFlow() {
-        database.backgroundColorFlow.watch { setBackgroundColor(it.hex) }
+    private fun listenToBackgroundColor() {
+        viewModel.colorFlow.onEach {
+            val newColor = Color.parseColor(it)
+            sceneView.setBackgroundColor(newColor)
+        }.launchIn(viewModel.viewModelScope)
     }
 
     override fun getView(): View {
-        sceneView.resume()
         return sceneView
-    }
-
-    private fun setBackgroundColor(color: String) {
-        val newColor = Color.parseColor(color)
-        sceneView.setBackgroundColor(newColor)
     }
 
     override fun dispose() {

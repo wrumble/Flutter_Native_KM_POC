@@ -4,6 +4,10 @@ A POC to see how to connect Flutter to Native Android and iOS though Platform Ch
 
 ## Getting Started
 
+Install [Flutter](https://flutter.dev/docs/get-started/install)
+
+Make sure you get all green ticks when running `flutter doctor`
+
 Clone the repo
 
 `cd BIMMultiPlatform/android`
